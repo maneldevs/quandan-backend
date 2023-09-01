@@ -1,0 +1,31 @@
+version: '3.8'
+
+volumes:
+  quandan-mysql-data:
+
+services:
+  app:
+    container_name: quandan-backend
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+        MYSQL_PASSWORD: root
+        MYSQL_USER: root
+        MYSQL_DB: quandan
+        MYSQL_HOSTNAME: quandan-mysql
+        SPRING_PROFILES_ACTIVE: local
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    network_mode: service:db
+  db:
+    container_name: quandan-mysql
+    image: mysql:latest
+    restart: unless-stopped
+    volumes:
+      - quandan-mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3308:3306
